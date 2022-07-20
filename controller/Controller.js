@@ -11,17 +11,46 @@ class Controller{
     }
 
     /**
+     * gets a whole table
+     * @param n 0, 1, 2
+     * @return {Promise<void>}
+     */
+    async getTable(n){
+        const table = await query(`SELECT * FROM ${TABLENAMES[n]}`);
+        return table;
+    }
+
+    /**
      * get all the clusters from the feedback_clusters table in db.
      *
-     * @return [ { id: String, title: String, accepted: Number, miscellaneous } ]
+     * @return [ { id: Number, title: String, accepted: Number, miscellaneous } ]
      */
     async getAllClusters(){
         console.log("getAllClusters called!");
         //TODO
-        var arr = [];
-        const qryString =  `SELECT * FROM ${TABLENAMES[0]}`;
-        arr = await query(qryString);
-        return arr;
+        const table = await(this.getTable(0));
+        return table;
+    }
+
+    /**
+     * get all the sentences from the feedback_sentences table in db.
+     *
+     * @return [ { id: Number sentence_text: String, order_within_feedback_entry: Number, feedback_entry_id: Number } ]
+     */
+    async getAllSentences(){
+        console.log("getAllSentences called!");
+        const table = await(this.getTable(1));
+        return table;
+    }
+
+    /**
+     * gets all the sentence-cluster mappings
+     * @return
+     */
+    async getAllMappings(){
+        console.log("getAllMappings called!");
+        const table = await(this.getTable(2));
+        return table;
     }
 
     /**
@@ -91,7 +120,7 @@ class Controller{
      * @param cluster
      * @return Array
      */
-    async getAllSentences(cluster){
+    async getAllSentencesFrom(cluster){
 
     }
 
