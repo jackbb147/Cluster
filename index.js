@@ -24,11 +24,13 @@ app.listen(port, async () => {
 
 app.get("/", async (req, res) => {
     const tables = TABLENAMES;
-    const qStr =  `SELECT * FROM ${tables[0]}`;
+    const qStr1 =  `SELECT * FROM ${tables[0]}`;
+    const qStr2 =  `SELECT * FROM ${tables[1]}`;
+    const qStr3 =  `SELECT * FROM ${tables[2]}`;
 
+    const results1 = await query(qStr1);
+    const results2 = await query(qStr2);
+    const results3 = await query(qStr3);
 
-    const results = await query(qStr);
-
-    const html = prettyPrintJson.toHtml(results);
-    res.send(`<pre>${html}</pre>`);
+    res.send(`<pre>${prettyPrintJson.toHtml(results1)}</pre> <br>`);
 });
