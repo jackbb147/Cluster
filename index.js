@@ -1,6 +1,7 @@
 require('dotenv').config()
 const helpers = require("./helperMethods");
 const print = helpers.print;
+const prettyPrintJson = require('pretty-print-json').prettyPrintJson;
 const query = require("./controller/db.js").query;
 const mysql = require('mysql2/promise');
 const config = require('./config.js').config;
@@ -17,10 +18,6 @@ app.use(
 );
 
 
-
-
-
-
 app.listen(port, async () => {
     print(`APP LISTENING ON PORT ${port}`)
 })
@@ -30,6 +27,8 @@ app.get("/", async (req, res) => {
     const qStr =  `SELECT * FROM ${tables[0]}`;
 
 
-    const results = await query(qStr)
-    res.json(results);
+    const results = await query(qStr);
+
+    const html = prettyPrintJson.toHtml(results);
+    res.send(`<pre>${html}</pre>`);
 });
