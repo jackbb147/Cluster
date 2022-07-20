@@ -1,49 +1,44 @@
 
 
 const {query} = require("./db.js");
+const TABLENAMES  = ["feedback_clusters", "feedback_sentences", "sentence_cluster_mapping"]
 
-//Handles db CRUD operations.
+
+//Handles all operations to the database.
 class Controller{
     constructor() {
         this.q = query;
     }
 
     /**
+     * get all the clusters from the feedback_clusters table in db.
      *
-     * @return
+     * @return [ { id: String, title: String, accepted: Number, miscellaneous } ]
      */
-    findUnclusteredSentences(){
-
+    async getAllClusters(){
+        console.log("getAllClusters called!");
+        //TODO
+        var arr = [];
+        const qryString =  `SELECT * FROM ${TABLENAMES[0]}`;
+        arr = await query(qryString);
+        return arr;
     }
-
-    /**
-     * @return
-     */
-    reconstructFbEntry(){
-
-    }
-
-    /**
-     * @param cluster
-     */
-    getAllSentences(cluster){
-
-    }
-
 
     /**
      * Accept a cluster
      * @param cluster
+     * @return Number: 0 for success; else is failure
      */
-    setAccept(cluster){
+    async setAccept(cluster){
 
     }
 
     /**
      * unaccept a cluster
      * @param cluster
+     * @return Number: 0 for success; else is failure
      */
-    setUnaccept(cluster){
+    async setUnaccept(cluster){
 
     }
 
@@ -51,30 +46,75 @@ class Controller{
      * remove a sentence from a cluster
      * @param cluster
      * @param sentence
+     * @return Number: 0 for success; else is failure
      */
-    removeSentence(cluster, sentence){
+    async removeSentence(cluster, sentence){
 
     }
+
 
     /**
      * add a sentence to a cluster
      * @param cluster
      * @param sentence
+     * @return Number: 0 for success; else is failure
      */
-    addSentence(cluster, sentence){
+    async addSentence(cluster, sentence){
 
     }
 
     /**
+     * Given a list of all sentences, find the unclustered ones.
+     * @param sentences
+     *
+     * @return Number: 0 for success; else is failure
+     */
+    async getUnclusteredSentences(sentences){
+
+    }
+
+    /**
+     * reconstructs a feedback entry from its sentences.
+     *
+     * @param order
+     * @param feedbackID
+     * @param sentences
+     * @return String
+     */
+    async reconstructFbEntry(order, feedbackID, sentences ){
+
+    }
+
+    /**
+     * returns an array of all sentences in the given cluster
+     * FRONT END
+     * @param cluster
+     * @return Array
+     */
+    async getAllSentences(cluster){
+
+    }
+
+
+
+
+
+
+
+
+    /**
      * search on unclustered sentences to find specific sentences.
+     * FRONT END
      * @param sentence
      */
     searchUnclustered(sentence){
 
     }
 
+
     /**
      * search on clusters to find specific clusters
+     * FRONT END
      * @param cluster
      */
     searchClusters(clusters){
@@ -93,3 +133,5 @@ class Controller{
 
 
 }
+
+module.exports = {Controller}

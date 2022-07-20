@@ -3,6 +3,7 @@ const helpers = require("./helperMethods");
 const print = helpers.print;
 const prettyPrintJson = require('pretty-print-json').prettyPrintJson;
 const query = require("./controller/db.js").query;
+const {Controller}  = require("./controller/Controller.js");
 const mysql = require('mysql2/promise');
 const config = require('./config.js').config;
 const connect = require("./controller/db").connect;
@@ -16,6 +17,8 @@ app.use(
         extended: true,
     })
 );
+
+const controller = new Controller();
 
 
 app.listen(port, async () => {
@@ -34,3 +37,11 @@ app.get("/", async (req, res) => {
 
     res.send(`<pre>${prettyPrintJson.toHtml(results1)}</pre> <br>`);
 });
+
+app.get("/api/clusters", async (req, res) => {
+
+    const clusters = await controller.getAllClusters();
+    res.send(`<pre>${prettyPrintJson.toHtml(clusters)}</pre> <br>`);
+})
+
+
