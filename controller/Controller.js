@@ -66,6 +66,8 @@ class Controller{
         return (await this.getCluster(id)).length > 0;
     }
 
+
+
     /**
      * helper method to select from the given table where id is the given ID
      * @param tableName
@@ -214,13 +216,20 @@ class Controller{
     }
 
     /**
-     * Given a list of all sentences, find the unclustered ones.
+     * find the sentences that are not in any cluster.
      * @param sentences
      *
      * @return Number: 0 for success; else is failure
      */
     async getUnclusteredSentences(sentences){
+        const queryString = `
+            SELECT t1.id
+            FROM ${this.sentencesTableName} t1
+            LEFT JOIN ${this.mappingsTableName} t2 ON t2.sentence_id = t1.id
+            WHERE t2.sentence_id IS NULL
+        `;
 
+        return await query(queryString);
     }
 
 

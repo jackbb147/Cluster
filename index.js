@@ -101,10 +101,19 @@ app.get("/api/sentencetofeedback/:sentenceid", async(req, res) => {
 //NOTE: /removesentece/123/321
 app.get("/api/removesentence/:clusterid/:sentenceid", async(req, res) => {
     const clusterID = req.params.clusterid,
-            sentenceID = req.params.sentenceid;
+        sentenceID = req.params.sentenceid;
 
 
     const result = await controller.removeSentence(clusterID, sentenceID);
+    console.log(result);
+    res.send(printJSON(result));
+})
+
+
+
+app.get("/api/unclusteredsentences", async(req, res) => {
+
+    const result = await controller.getUnclusteredSentences();
     console.log(result);
     res.send(printJSON(result));
 })
