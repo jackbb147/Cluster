@@ -10,6 +10,7 @@ class Controller{
         this.q = query;
         this.clustersTableName = TABLENAMES[0];
         this.sentencesTableName = TABLENAMES[1];
+        this.mappingsTableName = TABLENAMES[2];
     }
 
     /**
@@ -72,7 +73,13 @@ class Controller{
      * @return Array
      */
     async selectWithID(tableName, id){
-        const queryString = `SELECT * FROM ${tableName} WHERE id = ${id}`;
+            // const queryString = `SELECT * FROM ${tableName} WHERE id = ${id}`;
+            // return await query(queryString);
+        return await this.selectWithColumn(tableName, "id", id);
+    }
+    
+    async selectWithColumn(tableName , columnName, columnValue){
+        const queryString = `SELECT * FROM ${tableName} WHERE ${columnName} = ${columnValue}`;
         return await query(queryString);
     }
 
@@ -112,12 +119,22 @@ class Controller{
     }
 
     /**
-     * returns an array of all sentences in the given cluster
-     * @param cluster
+     * returns an array of IDs of all sentences in the given cluster
+     * @param clusterID
      * @return Array
      */
-    async getAllSentencesFrom(cluster){
-        
+    async getAllSentenceIDsFrom(clusterID){
+        const   columnName = "cluster_id",
+                columnValue = clusterID;
+        const mappings = await this.selectWithColumn(this.mappingsTableName, columnName, columnValue);
+        var ans = [];
+
+        for(var i = 0; i < mappings.length; i++){
+            const mapping = mappings[i];
+            let sentenceID = mapping.sentence_id;
+            ans.push(sentenceID);
+        }
+        return ans;
     }
 
 

@@ -83,6 +83,13 @@ app.get("/api/sentence/:id", async(req, res) => {
     res.send(printJSON(result));
 })
 
+app.get("/api/clustersentence/:id", async(req, res) => {
+
+    const result = await controller.getAllSentenceIDsFrom(req.params.id);
+    console.log(result);
+    res.send(printJSON(result));
+})
+
 
 
 
