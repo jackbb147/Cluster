@@ -1,11 +1,9 @@
 require('dotenv').config()
 const {print, printJSON} = require("./helperMethods");
-const prettyPrintJson = require('pretty-print-json').prettyPrintJson;
-const query = require("./controller/db.js").query;
 const {Controller}  = require("./controller/Controller.js");
-const mysql = require('mysql2/promise');
-const config = require('./config.js').config;
-const connect = require("./controller/db").connect;
+// const mysql = require('mysql2/promise');
+// const config = require('./config.js').config;
+// const connect = require("./controller/db").connect;
 const express = require("express");
 const app = express();
 const port = 1700;
@@ -47,6 +45,21 @@ app.get("/api/mappings", async (req, res) => {
     const result = await controller.getAllMappings();
     res.send(printJSON(result));
 })
+
+app.get("/api/existCluster/:id", async(req, res) => {
+    const result = await controller.clusterExists(req.params.id);
+    console.log(result);
+    res.send(printJSON(result));
+})
+
+app.get("/api/cluster/:id", async(req, res) => {
+
+    const result = await controller.getCluster(req.params.id);
+    console.log(result);
+    res.send(printJSON(result));
+})
+
+
 
 
 

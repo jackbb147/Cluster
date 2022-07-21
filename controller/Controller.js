@@ -1,13 +1,14 @@
 
 
 const {query} = require("./db.js");
-const TABLENAMES  = ["feedback_clusters", "feedback_sentences", "sentence_cluster_mapping"]
+const TABLENAMES  = ["feedback_clusters_1", "feedback_sentences", "sentence_cluster_mapping"]
 
 
 //Handles all operations to the database.
 class Controller{
     constructor() {
         this.q = query;
+        this.clustersTableName = TABLENAMES[0];
     }
 
     /**
@@ -51,6 +52,40 @@ class Controller{
         console.log("getAllMappings called!");
         const table = await(this.getTable(2));
         return table;
+    }
+
+    /**
+     * checks if a cluster with the given ID exists.
+     * @param id id of cluster
+     * @return Boolean
+     */
+    async clusterExists(id){
+        const clusters = this.clustersTableName;
+        const queryString = `SELECT id
+                                FROM ${clusters}
+                                WHERE EXISTS (SELECT id FROM ${clusters} WHERE id = 
+                                ${id});`
+        const queryResult = (await query(queryString)).length > 0;
+
+        return queryResult;
+    }
+
+    /**
+     * gets a cluster from a given ID.
+     * @param id
+     * @return a cluster object if found, else undefined
+     */
+    async getCluster(id){
+        var cluster = undefined;
+        const clustersTable = TABLENAMES[0];
+
+        const queryString = `SELECT * FROM feedback_clusters WHERE id = ${id}`;
+        // const DROPOLD = `DROP TABLE feedback_clusters`
+        // const RENAME = `RENAME TABLE feedback_clusters_1 TO feedback_clusters`
+        //TODO
+        // await query(queryRmDuplicate);
+        // await query(RENAME);
+        return await query(queryString);
     }
 
     /**
