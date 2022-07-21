@@ -9,6 +9,7 @@ class Controller{
     constructor() {
         this.q = query;
         this.clustersTableName = TABLENAMES[0];
+        this.sentencesTableName = TABLENAMES[1];
     }
 
     /**
@@ -32,6 +33,7 @@ class Controller{
         const table = await(this.getTable(0));
         return table;
     }
+
 
     /**
      * get all the sentences from the feedback_sentences table in db.
@@ -64,13 +66,26 @@ class Controller{
     }
 
     /**
+     * helper method to select from the given table where id is the given ID
+     * @param tableName
+     * @param id
+     * @return Array
+     */
+    async selectWithID(tableName, id){
+        const queryString = `SELECT * FROM ${tableName} WHERE id = ${id}`;
+        return await query(queryString);
+    }
+
+    /**
      * gets a cluster from a given ID.
      * @param id
      * @return Array of clusters (length could be 0)
      */
     async getCluster(id){
-        const queryString = `SELECT * FROM ${this.clustersTableName} WHERE id = ${id}`;
-        return await query(queryString);
+        // const queryString = `SELECT * FROM ${this.clustersTableName} WHERE id = ${id}`;
+        // return await query(queryString);
+
+        return this.selectWithID(this.clustersTableName, id);
     }
 
 
@@ -83,11 +98,32 @@ class Controller{
      */
     async setAccepted(clusterID, accept){
         const queryString = `UPDATE ${this.clustersTableName} SET accepted = ${accept} WHERE id = ${clusterID}`;
-
         await query(queryString);
-
         return 0;
     }
+
+    /**
+     * return sentences with the given ID
+     * @param sentenceID
+     * @return Array of sentences
+     */
+    async getSentence(sentenceID){
+        return this.selectWithID(this.sentencesTableName , sentenceID);
+    }
+
+    /**
+     * returns an array of all sentences in the given cluster
+     * @param cluster
+     * @return Array
+     */
+    async getAllSentencesFrom(cluster){
+        
+    }
+
+
+
+
+
 
 
     /**
@@ -132,19 +168,6 @@ class Controller{
     async reconstructFbEntry(order, feedbackID, sentences ){
 
     }
-
-    /**
-     * returns an array of all sentences in the given cluster
-     * FRONT END
-     * @param cluster
-     * @return Array
-     */
-    async getAllSentencesFrom(cluster){
-
-    }
-
-
-
 
 
 

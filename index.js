@@ -76,9 +76,12 @@ app.get("/api/unacceptcluster/:id", async(req, res) => {
     res.redirect(`/api/cluster/${id}`)
 })
 
+app.get("/api/sentence/:id", async(req, res) => {
 
-
-
+    const result = await controller.getSentence(req.params.id);
+    console.log(result);
+    res.send(printJSON(result));
+})
 
 
 
