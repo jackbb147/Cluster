@@ -89,8 +89,6 @@ class Controller{
      * @return Array of clusters (length could be 0)
      */
     async getCluster(id){
-        // const queryString = `SELECT * FROM ${this.clustersTableName} WHERE id = ${id}`;
-        // return await query(queryString);
 
         return this.selectWithID(this.clustersTableName, id);
     }
@@ -173,31 +171,35 @@ class Controller{
         return sentencetexts.join('');
 
 
-
-        //
-        // var reconstructed = ;      //a string
-        // //TODO
-
-
-        // return reconstructed;
     }
 
-
-
-
-
-
-
+    /**
+     * find a sentence from a cluster.
+     * @param clusterID
+     * @param sentenceID
+     * @return Array: if empty, sentence not in cluster.
+     */
+    async findSentenceInCluster(clusterID, sentenceID){
+        //TODO
+        const queryString = `SELECT * FROM ${this.mappingsTableName} 
+                                WHERE cluster_id = ${clusterID} 
+                                AND sentence_id = ${sentenceID}`;
+        return await query(queryString);
+    }
 
 
     /**
      * remove a sentence from a cluster
-     * @param cluster
-     * @param sentence
-     * @return Number: 0 for success; else is failure
+     * @param clusterID
+     * @param sentenceID
+     * @return Number: 0 for success
      */
-    async removeSentence(cluster, sentence){
-
+    async removeSentence(clusterID, sentenceID){
+        const queryString = `DELETE FROM ${this.mappingsTableName} 
+                            WHERE cluster_id = ${clusterID} 
+                            AND sentence_id = ${sentenceID}`;
+        await query(queryString);
+        return 0;
     }
 
 
