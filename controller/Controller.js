@@ -1,6 +1,7 @@
 
 
 const {query} = require("./db.js");
+const cluster = require("cluster");
 const TABLENAMES  = ["feedback_clusters", "feedback_sentences", "sentence_cluster_mapping"]
 
 //ASSUMPTIONS: 1. No two sentences share the same ID.
@@ -75,8 +76,6 @@ class Controller{
      * @return Array
      */
     async selectWithID(tableName, id){
-            // const queryString = `SELECT * FROM ${tableName} WHERE id = ${id}`;
-            // return await query(queryString);
         return await this.selectWithColumn(tableName, "id", id);
     }
     
@@ -205,15 +204,6 @@ class Controller{
     }
 
 
-    /**
-     * add a sentence to a cluster
-     * @param cluster
-     * @param sentence
-     * @return Number: 0 for success; else is failure
-     */
-    async addSentence(cluster, sentence){
-
-    }
 
     /**
      * find the sentences that are not in any cluster.
@@ -221,7 +211,7 @@ class Controller{
      *
      * @return Number: 0 for success; else is failure
      */
-    async getUnclusteredSentences(sentences){
+    async getUnclusteredSentences(){
         const queryString = `
             SELECT t1.id
             FROM ${this.sentencesTableName} t1
@@ -231,6 +221,36 @@ class Controller{
 
         return await query(queryString);
     }
+
+
+    /**
+     * add a sentence to a cluster
+     * @param clusterID
+     * @param sentenceID
+     * @return
+     */
+    async addSentenceToCluster(clusterID, sentenceID){
+        const queryString = `
+            INSERT INTO ${this.mappingsTableName} 
+                    ( sentence_id , cluster_id )
+            VALUES  (${sentenceID}, ${clusterID}) 
+        `;
+
+        return await query(queryString);
+    }
+
+
+
+    /**
+     * see if the given sentence doesn't have a cluster
+     * @param sentenceID
+     * @return Boolean
+     */
+    async isUnclustered(sentenceID){
+        //TODO
+    }
+
+
 
 
 

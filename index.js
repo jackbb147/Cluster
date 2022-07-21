@@ -118,6 +118,17 @@ app.get("/api/unclusteredsentences", async(req, res) => {
     res.send(printJSON(result));
 })
 
+//NOTE: /removesentece/123/321
+app.get("/api/addsentence/:clusterid/:sentenceid", async(req, res) => {
+    const clusterID = req.params.clusterid,
+        sentenceID = req.params.sentenceid;
+
+
+    const result = await controller.addSentenceToCluster(clusterID, sentenceID);
+    console.log(result);
+    res.send(printJSON(result));
+})
+
 
 
 
