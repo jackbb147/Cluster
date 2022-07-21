@@ -59,6 +59,25 @@ app.get("/api/cluster/:id", async(req, res) => {
     res.send(printJSON(result));
 })
 
+//could change this to a post request later.
+app.get("/api/acceptcluster/:id", async(req, res) => {
+    const id = req.params.id;
+    const result = await controller.setAccepted(id, 1);
+    console.log(result);
+    // res.send(printJSON(result));
+    res.redirect(`/api/cluster/${id}`)
+})
+
+app.get("/api/unacceptcluster/:id", async(req, res) => {
+    const id = req.params.id;
+    const result = await controller.setAccepted(req.params.id, 0);
+    console.log(result);
+    // res.send(printJSON(result));
+    res.redirect(`/api/cluster/${id}`)
+})
+
+
+
 
 
 

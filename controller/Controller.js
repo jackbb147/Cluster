@@ -1,7 +1,7 @@
 
 
 const {query} = require("./db.js");
-const TABLENAMES  = ["feedback_clusters_1", "feedback_sentences", "sentence_cluster_mapping"]
+const TABLENAMES  = ["feedback_clusters", "feedback_sentences", "sentence_cluster_mapping"]
 
 
 //Handles all operations to the database.
@@ -60,51 +60,35 @@ class Controller{
      * @return Boolean
      */
     async clusterExists(id){
-        const clusters = this.clustersTableName;
-        const queryString = `SELECT id
-                                FROM ${clusters}
-                                WHERE EXISTS (SELECT id FROM ${clusters} WHERE id = 
-                                ${id});`
-        const queryResult = (await query(queryString)).length > 0;
-
-        return queryResult;
+        return (await this.getCluster(id)).length > 0;
     }
 
     /**
      * gets a cluster from a given ID.
      * @param id
-     * @return a cluster object if found, else undefined
+     * @return Array of clusters (length could be 0)
      */
     async getCluster(id){
-        var cluster = undefined;
-        const clustersTable = TABLENAMES[0];
-
-        const queryString = `SELECT * FROM feedback_clusters WHERE id = ${id}`;
-        // const DROPOLD = `DROP TABLE feedback_clusters`
-        // const RENAME = `RENAME TABLE feedback_clusters_1 TO feedback_clusters`
-        //TODO
-        // await query(queryRmDuplicate);
-        // await query(RENAME);
+        const queryString = `SELECT * FROM ${this.clustersTableName} WHERE id = ${id}`;
         return await query(queryString);
     }
 
-    /**
-     * Accept a cluster
-     * @param cluster
-     * @return Number: 0 for success; else is failure
-     */
-    async setAccept(cluster){
 
-    }
 
     /**
-     * unaccept a cluster
-     * @param cluster
+     * accept/unaccept a cluster wit the given ID.
+     * @param clusterID
+     * @param accept Number 0 or 1
      * @return Number: 0 for success; else is failure
      */
-    async setUnaccept(cluster){
+    async setAccepted(clusterID, accept){
+        const queryString = `UPDATE ${this.clustersTableName} SET accepted = ${accept} WHERE id = ${clusterID}`;
 
+        await query(queryString);
+
+        return 0;
     }
+
 
     /**
      * remove a sentence from a cluster
