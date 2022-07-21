@@ -1,14 +1,18 @@
 
 
-const {query} = require("./db.js");
-const cluster = require("cluster");
+
 const TABLENAMES  = ["feedback_clusters", "feedback_sentences", "sentence_cluster_mapping"]
 
 //ASSUMPTIONS: 1. No two sentences share the same ID.
 //Handles all operations to the database.
 class Controller{
-    constructor() {
-        this.q = query;
+    /**
+     *
+     * @param query function with two parameters: sql string, sql params
+     */
+    constructor(query) {
+        // console.log("query: ", query());
+        this.query = query;
         this.clustersTableName = TABLENAMES[0];
         this.sentencesTableName = TABLENAMES[1];
         this.mappingsTableName = TABLENAMES[2];
@@ -20,7 +24,7 @@ class Controller{
      * @return {Promise<void>}
      */
     async getTable(n){
-        const table = await query(`SELECT * FROM ${TABLENAMES[n]}`);
+        const table = await this.query(`SELECT * FROM ${TABLENAMES[n]}`);
         return table;
     }
 
@@ -81,7 +85,7 @@ class Controller{
     
     async selectWithColumn(tableName , columnName, columnValue){
         const queryString = `SELECT * FROM ${tableName} WHERE ${columnName} = ${columnValue}`;
-        return await query(queryString);
+        return await this.query(queryString);
     }
 
     /**
@@ -104,7 +108,7 @@ class Controller{
      */
     async setAccepted(clusterID, accept){
         const queryString = `UPDATE ${this.clustersTableName} SET accepted = ${accept} WHERE id = ${clusterID}`;
-        await query(queryString);
+        await this.query(queryString);
         return 0;
     }
 
@@ -125,7 +129,9 @@ class Controller{
     async getSentencesFromCluster(clusterID){
         const   columnName = "cluster_id",
                 columnValue = clusterID;
+        console.log("Controller.js 132: ", columnName, columnValue);
         const mappings = await this.selectWithColumn(this.mappingsTableName, columnName, columnValue);
+        console.log("Controller.js 134: ", mappings);
         var ans = [];
 
         for(var i = 0; i < mappings.length; i++){
@@ -154,6 +160,7 @@ class Controller{
      * @return {Promise<void>}
      */
     async getFeedbacksFromCluster(clusterID){
+        console.log("CLUSTERID: ", clusterID)
         const IDs = await this.getSentencesFromCluster(clusterID);
         console.log(IDs);
         var fbEntries = [];
@@ -171,8 +178,9 @@ class Controller{
      * @param sentenceID
      * @return String
      */
-    async reconstructFbEntry(sentenceID ){
+    async reconstructFbEntry( sentenceID ){
         const sentence = (await this.getSentence(sentenceID))[0];   //see ASSUMPTIONS above
+        if(sentence === undefined) return;                          //no sentence found.
         var fbID;                 // feedback ID
         try {
             fbID = sentence.feedback_entry_id;
@@ -207,7 +215,7 @@ class Controller{
         const queryString = `SELECT * FROM ${this.mappingsTableName} 
                                 WHERE cluster_id = ${clusterID} 
                                 AND sentence_id = ${sentenceID}`;
-        return await query(queryString);
+        return await this.query(queryString);
     }
 
 
@@ -221,7 +229,7 @@ class Controller{
         const queryString = `DELETE FROM ${this.mappingsTableName} 
                             WHERE cluster_id = ${clusterID} 
                             AND sentence_id = ${sentenceID}`;
-        await query(queryString);
+        await this.query(queryString);
         return 0;
     }
 
@@ -241,7 +249,16 @@ class Controller{
             WHERE t2.sentence_id IS NULL
         `;
 
-        return await query(queryString);
+        return await this.query(queryString);
+    }
+
+    /**
+     * given an array of sentence ID's, return the ones that can be found in the sentences table.
+     * @param IDs Array
+     * @return arr
+     */
+    async getAvailableSentences(IDs){
+
     }
 
 
@@ -258,7 +275,7 @@ class Controller{
             VALUES  (${sentenceID}, ${clusterID}) 
         `;
 
-        return await query(queryString);
+        return await this.query(queryString);
     }
 
 
