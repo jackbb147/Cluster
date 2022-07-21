@@ -1,10 +1,9 @@
 const PRODUCTION = false;
+
 require('dotenv').config()
+const query = require("./controller/db.js").query;
 const {print, printJSON} = require("./helperMethods");
 const {Controller}  = require("./controller/Controller.js");
-// const mysql = require('mysql2/promise');
-// const config = require('./config.js').config;
-// const connect = require("./controller/db").connect;
 const express = require("express");
 const app = express();
 const port = 1700;
@@ -17,13 +16,9 @@ app.use(
     })
 );
 
-const query = require("./controller/db.js").query;
 Promise.resolve(query()).then(async f => {
     print(f)
-    const controller = new Controller(async (sql, params)=> {
-        const [results, ] = await f(sql, params);
-        return results;
-    });
+    const controller = new Controller(f);
 
     app.listen(port, async () => {
         print(`APP LISTENING ON PORT ${port}`)
@@ -163,11 +158,5 @@ Promise.resolve(query()).then(async f => {
 
 
 });
-
-// const controller = new Controller();
-
-
-
-
 
 

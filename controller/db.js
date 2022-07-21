@@ -13,9 +13,26 @@ const {config} = require("../config");
 // // const [results, ] = await connection.execute(sql, params);
 // // return results;
 
+/**
+ * Establishes connection to the database using provided credentials,
+ * promising to return a function that can be used to execute queries through
+ * the established connection.
+ *
+ * @return Function
+ *          that takes in two parameters: sql string and sql parameters,
+ *              and returns the result of the query.
+ *
+ */
 async function query() {
+    // Establishing connection
     const connection = await mysql.createConnection(config.db);
-    return connection.execute.bind(connection);
+
+    // Preparing the execute method of the established connection
+    var f = connection.execute.bind(connection);
+    return async (sql, params)=> {
+        const [results, ] = await f(sql, params);
+        return results;
+    }
 }
 
 
