@@ -1,3 +1,4 @@
+const PRODUCTION = true;
 require('dotenv').config()
 const {print, printJSON} = require("./helperMethods");
 const {Controller}  = require("./controller/Controller.js");
@@ -7,7 +8,8 @@ const {Controller}  = require("./controller/Controller.js");
 const express = require("express");
 const app = express();
 const port = 1700;
-const TABLENAMES = ["feedback_clusters", "feedback_sentences", "sentence_cluster_mapping"]
+const cors = require("cors")
+app.use(cors())
 app.use(express.json());
 app.use(
     express.urlencoded({
@@ -17,6 +19,14 @@ app.use(
 
 const controller = new Controller();
 
+/**
+ * helper function for debugging purposes.
+ * set PRODUCTION to false when debugging.
+ */
+function process(obj){
+    return PRODUCTION ? obj : printJSON(obj);
+}
+
 
 app.listen(port, async () => {
     print(`APP LISTENING ON PORT ${port}`)
@@ -24,39 +34,38 @@ app.listen(port, async () => {
 
 app.get("/", async (req, res) => {
 
-
     res.send("/api + one of the following: /clusters, /sentences, /mappings");
 });
 
 app.get("/api/clusters", async (req, res) => {
 
     const result = await controller.getAllClusters();
-    res.send(printJSON(result));
+    res.send(process(result));
 })
 
 app.get("/api/sentences", async (req, res) => {
     console.log("getting sentences");
     const result = await controller.getAllSentences();
-    res.send(printJSON(result));
+    res.send(process(result));
 })
 
 app.get("/api/mappings", async (req, res) => {
     console.log("getting sentences");
     const result = await controller.getAllMappings();
-    res.send(printJSON(result));
+    res.send(process(result));
 })
 
 app.get("/api/existCluster/:id", async(req, res) => {
     const result = await controller.clusterExists(req.params.id);
     console.log(result);
-    res.send(printJSON(result));
+    res.send(process(result));
 })
 
 app.get("/api/cluster/:id", async(req, res) => {
 
     const result = await controller.getCluster(req.params.id);
     console.log(result);
-    res.send(printJSON(result));
+    res.send(process(result));
 })
 
 //could change this to a post request later.
@@ -80,21 +89,21 @@ app.get("/api/sentence/:id", async(req, res) => {
 
     const result = await controller.getSentence(req.params.id);
     console.log(result);
-    res.send(printJSON(result));
+    res.send(process(result));
 })
 
 app.get("/api/clustersentence/:id", async(req, res) => {
 
     const result = await controller.getSentencesFromCluster(req.params.id);
     console.log(result);
-    res.send(printJSON(result));
+    res.send(process(result));
 })
 
 app.get("/api/sentencetofeedback/:sentenceid", async(req, res) => {
 
     const result = await controller.reconstructFbEntry(req.params.sentenceid);
     console.log(result);
-    res.send(printJSON(result));
+    res.send(process(result));
 })
 
 
@@ -106,7 +115,7 @@ app.get("/api/removesentence/:clusterid/:sentenceid", async(req, res) => {
 
     const result = await controller.removeSentence(clusterID, sentenceID);
     console.log(result);
-    res.send(printJSON(result));
+    res.send(process(result));
 })
 
 
@@ -115,7 +124,7 @@ app.get("/api/unclusteredsentences", async(req, res) => {
 
     const result = await controller.getUnclusteredSentences();
     console.log(result);
-    res.send(printJSON(result));
+    res.send(process(result));
 })
 
 //NOTE: /removesentece/123/321
@@ -126,9 +135,15 @@ app.get("/api/addsentence/:clusterid/:sentenceid", async(req, res) => {
 
     const result = await controller.addSentenceToCluster(clusterID, sentenceID);
     console.log(result);
-    res.send(printJSON(result));
+    res.send(process(result));
 })
 
+app.get("/api/clusterfeedbacks/:id", async(req, res) => {
+
+    const result = await controller.getFeedbacksFromCluster(req.params.id);
+    console.log(result);
+    res.send(process(result));
+})
 
 
 

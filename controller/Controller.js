@@ -147,7 +147,23 @@ class Controller{
         return sentences;
     }
 
+    /**
+     * for each sentence associated to a cluster, reconstruct its feedback entry.
+     * returns the whole thing
+     * @param clusterID
+     * @return {Promise<void>}
+     */
+    async getFeedbacksFromCluster(clusterID){
+        const IDs = await this.getSentencesFromCluster(clusterID);
+        console.log(IDs);
+        var fbEntries = [];
+        for( const id of IDs) {
+            fbEntries.push(await this.reconstructFbEntry(id));
+        }
 
+        return fbEntries;
+
+    }
 
     /**
      * reconstructs a feedback entry, given any of its sentences
@@ -157,7 +173,13 @@ class Controller{
      */
     async reconstructFbEntry(sentenceID ){
         const sentence = (await this.getSentence(sentenceID))[0];   //see ASSUMPTIONS above
-        const fbID = sentence.feedback_entry_id;                    // feedback ID
+        var fbID;                 // feedback ID
+        try {
+            fbID = sentence.feedback_entry_id;
+        }catch (e) {
+            console.log(e, "sentence: ", sentence, "sentenceID: ", sentenceID); //TODO :handle this when sentenceID is bogus(not in the sentences table)
+            return;
+        }
         var sentences = await this.getSentencesFromFeedback(fbID);  // sentence object
         var sentencetexts = [];
 
