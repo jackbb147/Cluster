@@ -3,7 +3,7 @@
 const {query} = require("./db.js");
 const TABLENAMES  = ["feedback_clusters", "feedback_sentences", "sentence_cluster_mapping"]
 
-
+//ASSUMPTIONS: 1. No two sentences share the same ID.
 //Handles all operations to the database.
 class Controller{
     constructor() {
@@ -123,7 +123,7 @@ class Controller{
      * @param clusterID
      * @return Array
      */
-    async getAllSentenceIDsFrom(clusterID){
+    async getSentencesFromCluster(clusterID){
         const   columnName = "cluster_id",
                 columnValue = clusterID;
         const mappings = await this.selectWithColumn(this.mappingsTableName, columnName, columnValue);
@@ -136,6 +136,53 @@ class Controller{
         }
         return ans;
     }
+
+    /**
+     * find all sentences from a given feedback entry
+     * @param fbID id of the feedback entry
+     * @return
+     */
+    async getSentencesFromFeedback(fbID){
+        const sentences = await this.selectWithColumn(this.sentencesTableName, "feedback_entry_id", fbID);
+
+        return sentences;
+    }
+
+
+
+    /**
+     * reconstructs a feedback entry, given any of its sentences
+     *
+     * @param sentenceID
+     * @return String
+     */
+    async reconstructFbEntry(sentenceID ){
+        const sentence = (await this.getSentence(sentenceID))[0];   //see ASSUMPTIONS above
+        const fbID = sentence.feedback_entry_id;                    // feedback ID
+        var sentences = await this.getSentencesFromFeedback(fbID);  // sentence object
+        var sentencetexts = [];
+
+        // 1. SORT by order
+        sentences = sentences.sort(
+            (a,b) => a.order_within_feedback_entry - b.order_within_feedback_entry
+        );
+        // 2. grab the texts
+        sentences.forEach(sentence => {sentencetexts.push(sentence.sentence_text)});
+
+        // 3. merge and return
+        return sentencetexts.join('');
+
+
+
+        //
+        // var reconstructed = ;      //a string
+        // //TODO
+
+
+        // return reconstructed;
+    }
+
+
 
 
 
@@ -171,18 +218,6 @@ class Controller{
      * @return Number: 0 for success; else is failure
      */
     async getUnclusteredSentences(sentences){
-
-    }
-
-    /**
-     * reconstructs a feedback entry from its sentences.
-     *
-     * @param order
-     * @param feedbackID
-     * @param sentences
-     * @return String
-     */
-    async reconstructFbEntry(order, feedbackID, sentences ){
 
     }
 
