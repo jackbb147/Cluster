@@ -137,7 +137,7 @@ class Controller{
     /**
      * return sentences with the given ID
      * @param sentenceID
-     * @return Array of sentences
+     * @return Promise<Array>
      */
     async getSentence(sentenceID){
         return this.selectWithID(this.sentencesTableName , sentenceID);

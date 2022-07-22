@@ -95,9 +95,11 @@ Promise.resolve(queryFactory()).then(async f => {
      */
     app.get("/api/sentence/:id", async(req, res) => {
 
-        const result = await controller.getSentence(req.params.id);
-        console.log(result);
-        res.send(process(result));
+        const result = controller.getSentence(req.params.id);
+        result.then(arr => {
+            console.log("index.js 101: ", arr);
+            res.send(process(arr));
+        })
     })
 
     app.get("/api/clustersentence/:id", async(req, res) => {
