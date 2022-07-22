@@ -1,4 +1,4 @@
-const PRODUCTION = false;
+const PRODUCTION = true;
 
 require('dotenv').config()
 const query = require("./controller/db.js").query;

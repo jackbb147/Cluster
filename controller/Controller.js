@@ -82,9 +82,31 @@ class Controller{
     async selectWithID(tableName, id){
         return await this.selectWithColumn(tableName, "id", id);
     }
-    
+
+    /**
+     * get all the fields of the documents with the right column value
+     * @param tableName
+     * @param columnName
+     * @param columnValue
+     * @return {Promise<*>}
+     */
     async selectWithColumn(tableName , columnName, columnValue){
         const queryString = `SELECT * FROM ${tableName} WHERE ${columnName} = ${columnValue}`;
+        return await this.query(queryString);
+    }
+
+    /**
+     * get particular(as opposed to all)  fields of the documents with the right column value
+     * @param tableName
+     * @param columnName
+     * @param columnValue
+     * @param wantedColumn
+     * @return {Promise<void>}
+     */
+    async selectSomeWithColumn(tableName, columnName, columnValue, ...wantedColumn){
+
+        const wantedColumns = wantedColumn.join(",");
+        const queryString = `SELECT ${wantedColumns} FROM ${tableName} WHERE ${columnName} = ${columnValue}`;
         return await this.query(queryString);
     }
 
@@ -148,8 +170,11 @@ class Controller{
      * @return
      */
     async getSentencesFromFeedback(fbID){
-        const sentences = await this.selectWithColumn(this.sentencesTableName, "feedback_entry_id", fbID);
-
+        // const sentences = await this.selectWithColumn(this.sentencesTableName, "feedback_entry_id", fbID);
+        const sentences = await this.selectSomeWithColumn(
+            this.sentencesTableName, "feedback_entry_id", fbID,
+            "id", "sentence_text", "order_within_feedback_entry", "feedback_entry_id"
+        )
         return sentences;
     }
 
