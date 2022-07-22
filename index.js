@@ -151,8 +151,6 @@ Promise.resolve(queryFactory()).then(async f => {
             console.log("index.js 151: ", values);
             res.send(values);
         })
-        // result.then(values => res.send(process(values)));
-        // res.send(process(result));
     })
 
 

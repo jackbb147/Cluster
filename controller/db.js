@@ -28,7 +28,7 @@ async function queryFactory() {
     // const connection = await mysql.createConnection(config.db);
     const configuration = {...config.db, ... {
         waitForConnections: true,   //TODO
-        connectionLimit: 50,        //TODO
+        connectionLimit: 60,        //TODO
         queueLimit: 5000              //TODO
     }};
     const pool = await mysql.createPool(configuration)
