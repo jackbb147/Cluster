@@ -186,18 +186,27 @@ class Controller{
      * for each sentence associated to a cluster, reconstruct its feedback entry.
      * returns the whole thing
      * @param clusterID
-     * @return {Promise<void>}
+     * @return
      */
     async getFeedbacksFromCluster(clusterID){
         console.log("CLUSTERID: ", clusterID)
         const IDs = await this.getSentencesFromCluster(clusterID);
         console.log(IDs);
+        var fbEntryPromises = [];
         var fbEntries = [];
+        //FIRE UP A BUNCH OF CONNECTIONS SIMULTANEOUSLY SO THAT
+        //MULTIPLE QUERIES CAN BE DONE AT ONCE.
         for( const id of IDs) {
-            fbEntries.push(await this.reconstructFbEntry(id));
+            // fbEntries.push(await this.reconstructFbEntry(id));
+            fbEntryPromises.push(this.reconstructFbEntry(id));
         }
 
-        return fbEntries;
+        const onePromise = Promise.all(fbEntryPromises);
+        console.log("Controller.js 203, one Promise: ", onePromise);
+
+        return onePromise;
+
+        // return fbEntries;
 
     }
 

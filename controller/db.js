@@ -23,15 +23,22 @@ const {config} = require("../config");
  *              and returns the result of the query.
  *
  */
-async function query() {
+async function queryFactory() {
     // Establishing connection
-    const connection = await mysql.createConnection(config.db);
-    const addIndex = `CREATE INDEX idx_cluster_id ON sentence_cluster_mapping (cluster_id);`;
+    // const connection = await mysql.createConnection(config.db);
+    const configuration = {...config.db, ... {
+        waitForConnections: true,   //TODO
+        connectionLimit: 50,        //TODO
+        queueLimit: 5000              //TODO
+    }};
+    const pool = await mysql.createPool(configuration)
+    // const addIndex = `CREATE INDEX idx_cluster_id ON sentence_clus
+    // ter_mapping (cluster_id);`;
     // const dropIndex = `DROP INDEX idx_feedback_entry_id ON feedback_sentences`;
 
     // await connection.execute(addIndex);
     // Preparing the execute method of the established connection
-    var f = connection.execute.bind(connection);
+    var f = pool.execute.bind(pool);
     return async (sql, params)=> {
         const [results, ] = await f(sql, params);
         return results;
@@ -39,6 +46,6 @@ async function query() {
 }
 
 
-module.exports = {query};
+module.exports = {queryFactory};
 
 

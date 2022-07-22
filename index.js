@@ -1,7 +1,7 @@
 const PRODUCTION = true;
 
 require('dotenv').config()
-const query = require("./controller/db.js").query;
+const queryFactory = require("./controller/db.js").queryFactory;
 const {print, printJSON} = require("./helperMethods");
 const {Controller}  = require("./controller/Controller.js");
 const express = require("express");
@@ -16,7 +16,7 @@ app.use(
     })
 );
 
-Promise.resolve(query()).then(async f => {
+Promise.resolve(queryFactory()).then(async f => {
     print(f)
     const controller = new Controller(f);
 
@@ -145,9 +145,14 @@ Promise.resolve(query()).then(async f => {
 
     app.get("/api/clusterfeedbacks/:id", async(req, res) => {
 
-        const result = await controller.getFeedbacksFromCluster(req.params.id);
-        console.log(result);
-        res.send(process(result));
+        const result = controller.getFeedbacksFromCluster(req.params.id);
+        console.log("index.js 149, result : ", result);
+        result.then(values => {
+            console.log("index.js 151: ", values);
+            res.send(values);
+        })
+        // result.then(values => res.send(process(values)));
+        // res.send(process(result));
     })
 
 
