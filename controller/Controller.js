@@ -18,7 +18,7 @@ class Controller{
         this.mappingsTableName = TABLENAMES[2];
     }
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * gets a whole table
      * @param n 0, 1, 2
      * @return {Promise<void>}
@@ -28,7 +28,7 @@ class Controller{
         return table;
     }
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * get all the clusters from the feedback_clusters table in db.
      *
      * @return [ { id: Number, title: String, accepted: Number, miscellaneous } ]
@@ -41,7 +41,7 @@ class Controller{
     }
 
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * get all the sentences from the feedback_sentences table in db.
      *
      * @return [ { id: Number sentence_text: String, order_within_feedback_entry: Number, feedback_entry_id: Number } ]
@@ -52,7 +52,7 @@ class Controller{
         return table;
     }
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * gets all the sentence-cluster mappings
      * @return
      */
@@ -62,7 +62,7 @@ class Controller{
         return table;
     }
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * checks if a cluster with the given ID exists.
      * @param id id of cluster
      * @return Boolean
@@ -101,13 +101,13 @@ class Controller{
      * @param columnName
      * @param columnValue
      * @param wantedColumn
-     * @return {Promise<void>}
+     * @return {Promise<>}
      */
     async selectSomeWithColumn(tableName, columnName, columnValue, ...wantedColumn){
 
         const wantedColumns = wantedColumn.join(",");
         const queryString = `SELECT ${wantedColumns} FROM ${tableName} WHERE ${columnName} = ${columnValue}`;
-        return await this.query(queryString);
+        return this.query(queryString);
     }
 
     /**
@@ -122,7 +122,7 @@ class Controller{
 
 
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * accept/unaccept a cluster wit the given ID.
      * @param clusterID
      * @param accept Number 0 or 1
@@ -143,7 +143,7 @@ class Controller{
         return this.selectWithID(this.sentencesTableName , sentenceID);
     }
 
-    /**
+    /** TODO needs refactoring to promise
      * returns an array of IDs of all sentences in the given cluster
      * @param clusterID
      * @return Array
@@ -232,7 +232,7 @@ class Controller{
         return sentencetexts.join('');
     }
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * find a sentence from a cluster.
      * @param clusterID
      * @param sentenceID
@@ -247,7 +247,7 @@ class Controller{
     }
 
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * remove a sentence from a cluster
      * @param clusterID
      * @param sentenceID
@@ -278,7 +278,7 @@ class Controller{
         return this.query(queryString);
     }
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * given an array of sentence ID's, return the ones that can be found in the sentences table.
      * @param IDs Array
      * @return arr
@@ -288,7 +288,7 @@ class Controller{
     }
 
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * add a sentence to a cluster
      * @param clusterID
      * @param sentenceID
@@ -306,7 +306,7 @@ class Controller{
 
 
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * see if the given sentence doesn't have a cluster
      * @param sentenceID
      * @return Boolean
@@ -321,7 +321,7 @@ class Controller{
 
 
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * search on unclustered sentences to find specific sentences.
      * FRONT END
      * @param sentence
@@ -331,7 +331,7 @@ class Controller{
     }
 
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * search on clusters to find specific clusters
      * FRONT END
      * @param cluster
@@ -340,7 +340,7 @@ class Controller{
 
     }
 
-    /**
+    /**    /** TODO needs refactoring to promise
      * filter between all clusters, accepted clusters, and unaccepted clusters.
      * @param n
      */
