@@ -151,8 +151,12 @@ class Controller{
     async getSentencesFromCluster(clusterID){
         const   columnName = "cluster_id",
                 columnValue = clusterID;
+
         console.log("Controller.js 132: ", columnName, columnValue);
-        const mappings = await this.selectWithColumn(this.mappingsTableName, columnName, columnValue);
+        const mappings = await this.selectSomeWithColumn(
+            this.mappingsTableName, columnName, columnValue,
+            "id", "sentence_id", "cluster_id"
+        );
         console.log("Controller.js 134: ", mappings);
         var ans = [];
 

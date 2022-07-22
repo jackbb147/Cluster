@@ -26,7 +26,10 @@ const {config} = require("../config");
 async function query() {
     // Establishing connection
     const connection = await mysql.createConnection(config.db);
+    const addIndex = `CREATE INDEX idx_cluster_id ON sentence_cluster_mapping (cluster_id);`;
+    // const dropIndex = `DROP INDEX idx_feedback_entry_id ON feedback_sentences`;
 
+    // await connection.execute(addIndex);
     // Preparing the execute method of the established connection
     var f = connection.execute.bind(connection);
     return async (sql, params)=> {
