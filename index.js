@@ -90,6 +90,9 @@ Promise.resolve(queryFactory()).then(async f => {
         res.redirect(`/api/cluster/${id}`)
     })
 
+    /**
+     * GET THE SENTENCE WITH THE GIVEN ID.
+     */
     app.get("/api/sentence/:id", async(req, res) => {
 
         const result = await controller.getSentence(req.params.id);
@@ -113,6 +116,9 @@ Promise.resolve(queryFactory()).then(async f => {
 
 
 //NOTE: /removesentece/123/321
+    /**
+     * REMOVE A SENTENCE FROM A CLUSTER
+     */
     app.get("/api/removesentence/:clusterid/:sentenceid", async(req, res) => {
         const clusterID = req.params.clusterid,
             sentenceID = req.params.sentenceid;
@@ -124,15 +130,24 @@ Promise.resolve(queryFactory()).then(async f => {
     })
 
 
-
+    /**
+     * GET THE ID's OF ALL UNCLUSTTERED SENTENCES
+     */
     app.get("/api/unclusteredsentences", async(req, res) => {
 
-        const result = await controller.getUnclusteredSentences();
+        const result = controller.getUnclusteredSentences();
         console.log(result);
-        res.send(process(result));
+        result.then(arr => {
+            console.log("index.js 133: ", arr);
+            res.send(process(arr));
+        })
     })
 
 //NOTE: /removesentece/123/321
+
+    /**
+     * ADD A SENTENCE TO A CLUSTER.
+     */
     app.get("/api/addsentence/:clusterid/:sentenceid", async(req, res) => {
         const clusterID = req.params.clusterid,
             sentenceID = req.params.sentenceid;
@@ -143,6 +158,10 @@ Promise.resolve(queryFactory()).then(async f => {
         res.send(process(result));
     })
 
+
+    /**
+     * GET THE FEEDBACKS ASSOCIATED WITH A CLUSTER.
+     */
     app.get("/api/clusterfeedbacks/:id", async(req, res) => {
 
         const result = controller.getFeedbacksFromCluster(req.params.id);
@@ -152,11 +171,6 @@ Promise.resolve(queryFactory()).then(async f => {
             res.send(values);
         })
     })
-
-
-
-
-
 
 
 

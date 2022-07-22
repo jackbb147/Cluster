@@ -182,7 +182,7 @@ class Controller{
         return sentences;
     }
 
-    /**
+    /** ! MODEL FOR REFACTORING INTO PROMISES
      * for each sentence associated to a cluster, reconstruct its feedback entry.
      * returns the whole thing
      * @param clusterID
@@ -193,21 +193,13 @@ class Controller{
         const IDs = await this.getSentencesFromCluster(clusterID);
         console.log(IDs);
         var fbEntryPromises = [];
-        var fbEntries = [];
         //FIRE UP A BUNCH OF CONNECTIONS SIMULTANEOUSLY SO THAT
         //MULTIPLE QUERIES CAN BE DONE AT ONCE.
         for( const id of IDs) {
             // fbEntries.push(await this.reconstructFbEntry(id));
             fbEntryPromises.push(this.reconstructFbEntry(id));
         }
-
-        const onePromise = Promise.all(fbEntryPromises);
-        console.log("Controller.js 203, one Promise: ", onePromise);
-
-        return onePromise;
-
-        // return fbEntries;
-
+        return Promise.all(fbEntryPromises);
     }
 
     /**
@@ -238,8 +230,6 @@ class Controller{
 
         // 3. merge and return
         return sentencetexts.join('');
-
-
     }
 
     /**
@@ -275,9 +265,7 @@ class Controller{
 
     /**
      * find the sentences that are not in any cluster.
-     * @param sentences
-     *
-     * @return Number: 0 for success; else is failure
+     * @return {Promise<Array>}
      */
     async getUnclusteredSentences(){
         const queryString = `
@@ -287,7 +275,7 @@ class Controller{
             WHERE t2.sentence_id IS NULL
         `;
 
-        return await this.query(queryString);
+        return this.query(queryString);
     }
 
     /**
