@@ -77,10 +77,10 @@ class Controller{
      * helper method to select from the given table where id is the given ID
      * @param tableName
      * @param id
-     * @return Array
+     * @return Promise<Array>
      */
     async selectWithID(tableName, id){
-        return await this.selectWithColumn(tableName, "id", id);
+        return this.selectWithColumn(tableName, "id", id);
     }
 
     /**
@@ -88,11 +88,11 @@ class Controller{
      * @param tableName
      * @param columnName
      * @param columnValue
-     * @return {Promise<*>}
+     * @return {Promise<Array>}
      */
     async selectWithColumn(tableName , columnName, columnValue){
         const queryString = `SELECT * FROM ${tableName} WHERE ${columnName} = ${columnValue}`;
-        return await this.query(queryString);
+        return this.query(queryString);
     }
 
     /**
@@ -171,11 +171,11 @@ class Controller{
     /**
      * find all sentences from a given feedback entry
      * @param fbID id of the feedback entry
-     * @return
+     * @return Promise<Array>
      */
     async getSentencesFromFeedback(fbID){
         // const sentences = await this.selectWithColumn(this.sentencesTableName, "feedback_entry_id", fbID);
-        const sentences = await this.selectSomeWithColumn(
+        const sentences = this.selectSomeWithColumn(
             this.sentencesTableName, "feedback_entry_id", fbID,
             "id", "sentence_text", "order_within_feedback_entry", "feedback_entry_id"
         )
