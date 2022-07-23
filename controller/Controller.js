@@ -18,25 +18,45 @@ class Controller{
         this.mappingsTableName = TABLENAMES[2];
     }
 
-    /**    /** TODO needs refactoring to promise
-     * gets a whole table
-     * @param n 0, 1, 2
+    /**
+     * gets a whole table, with an optional filter on some column (just 1 column for now).
+     * @param n 0, 1, 2 corresponds to the 3 tables in the database.
+     * @param filter  (optional) { columnName: , columnValue: [word1, word2, ...] },
+     *          will match the columns with values LIKE columnValue
      * @return {Promise<void>}
      */
-    async getTable(n){
-        const table = await this.query(`SELECT * FROM ${TABLENAMES[n]}`);
+    async getTable(n, filter){
+        // -------- optional ----------
+        var searchFilter = ``;
+        if(filter) {
+            searchFilter = ` WHERE `;
+            let columnName = filter.columnName;
+            filter.columnValue.forEach((value, index) => {
+                if(index > 0) searchFilter += ` OR `;
+                searchFilter += `${columnName} LIKE '%${value}%'`
+            })
+            // ${filter.columnName} LIKE '%${filter.columnValue}%'`;
+        }
+
+        // ----------------------------
+        const table = await this.query(`SELECT * FROM ${TABLENAMES[n]} ${searchFilter}`);
         return table;
     }
 
     /**    /** TODO needs refactoring to promise
      * get all the clusters from the feedback_clusters table in db.
-     *
+     * @param keywords optional keyword filter on cluster title.
      * @return [ { id: Number, title: String, accepted: Number, miscellaneous } ]
      */
-    async getAllClusters(){
+    async getAllClusters(keywords){
         console.log("getAllClusters called!");
+        var filter;
+        if(keywords) filter = {
+            columnName: "title",
+            columnValue: [keywords]
+        }
         //TODO
-        const table = await(this.getTable(0));
+        const table = await(this.getTable(0, filter));
         return table;
     }
 

@@ -42,9 +42,13 @@ Promise.resolve(queryFactory()).then(async f => {
         res.send("/api + one of the following: /clusters, /sentences, /mappings");
     });
 
-    app.get("/api/clusters", async (req, res) => {
-
-        const result = await controller.getAllClusters();
+    /**
+     * returns ALL clusters, with an optional keyword filter(separated by ampersand) on the cluster title.
+     */
+    app.get("/api/clusters/:keywords?", async (req, res) => {
+        let keywords = [];
+        if(req.params.keywords) keywords = req.params.keywords.split("&");
+        const result = await controller.getAllClusters(keywords);
         res.send(process(result));
     })
 
