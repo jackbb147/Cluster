@@ -134,16 +134,23 @@ Promise.resolve(queryFactory()).then(async f => {
 
     /**
      * GET THE ID's OF ALL UNCLUSTTERED SENTENCES
+     * RETURN FORMAT: [ {id: }, ... ]
+     * @param keywords word1&word2&word3&...
+     * @return Promise<Array>
      */
-    app.get("/api/unclusteredsentences", async(req, res) => {
-
-        const result = controller.getUnclusteredSentences();
+    app.get("/api/unclusteredsentences/:keywords?", async(req, res) => {
+        var keywords = [];
+        if(req.params.keywords) keywords = req.params.keywords.split("&");
+        print("142: ", keywords);
+        const result = controller.getUnclusteredSentences(keywords);
         console.log(result);
         result.then(arr => {
             console.log("index.js 133: ", arr);
             res.send(process(arr));
         })
     })
+
+
 
 //NOTE: /removesentece/123/321
 

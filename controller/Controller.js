@@ -265,14 +265,27 @@ class Controller{
 
     /**
      * find the sentences that are not in any cluster.
+     * @param keywords: (optional)array of keywords(String) that the sentence must contain.
      * @return {Promise<Array>}
      */
-    async getUnclusteredSentences(){
+    async getUnclusteredSentences(keywords = []){
+
+        //------------ optional: this search filter will look for keywords.  -----
+        var searchFilter = `AND ( `;
+        keywords.forEach((word, index) => {
+            if(index > 0) searchFilter += ` OR `;
+            searchFilter += `t1.sentence_text LIKE '%${word}%'`;
+        })
+        searchFilter += ` ) `;
+        console.log("Controller 279: ", searchFilter);
+        if(keywords.length < 1) searchFilter = ``;
+
+        //------------
         const queryString = `
-            SELECT t1.id
-            FROM ${this.sentencesTableName} t1
-            LEFT JOIN ${this.mappingsTableName} t2 ON t2.sentence_id = t1.id
-            WHERE t2.sentence_id IS NULL
+            SELECT t1.id 
+            FROM ${this.sentencesTableName} t1 
+            LEFT JOIN ${this.mappingsTableName} t2 ON t2.sentence_id = t1.id 
+            WHERE t2.sentence_id IS NULL ${searchFilter}
         `;
 
         return this.query(queryString);
