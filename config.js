@@ -5,7 +5,7 @@ const config = {
         user: process.env.USER,
         database: process.env.Database,
         password: process.env.PW,
-        port: process.env.PORT
+        port: process.env.SQLPORT
     }
 }
 
