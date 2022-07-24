@@ -6,7 +6,7 @@ const {print, printJSON} = require("./helperMethods");
 const {Controller}  = require("./controller/Controller.js");
 const express = require("express");
 const app = express();
-const port = 1700;
+const port = process.env.PORT || 1700;
 const cors = require("cors")
 app.use(cors())
 app.use(express.json());
