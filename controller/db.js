@@ -26,7 +26,7 @@ const {config} = require("../config");
 async function queryFactory() {
     // Establishing connection
     // const connection = await mysql.createConnection(config.db);
-    print("db.js 29: config.db: ", config.db);
+    console.log("db.js 29: config.db: ", config.db);
     const configuration = {...config.db, ... {
         waitForConnections: true,   //TODO
         connectionLimit: 60,        //TODO
