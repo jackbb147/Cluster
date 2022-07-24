@@ -19,7 +19,7 @@ class Controller{
     }
 
     /**
-     * gets a whole table, with an optional filter on some column (just 1 column for now).
+     * gets a whole table, with an optional filter on some column (JUST ONE COLUMN ONLY. Maybe in the future add support for multiple columns).
      * @param n 0, 1, 2 corresponds to the 3 tables in the database.
      * @param filter  (optional) { columnName: , columnValue: [word1, word2, ...] },
      *          will match the columns with values LIKE columnValue
