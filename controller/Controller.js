@@ -226,7 +226,7 @@ class Controller{
      * reconstructs a feedback entry, given any of its sentences
      *
      * @param sentenceID
-     * @return String
+     * @return String, with the format being "text$id" where id is the feedback id.
      */
     async reconstructFbEntry( sentenceID ){
         const sentence = (await this.getSentence(sentenceID))[0];   //see ASSUMPTIONS above
@@ -249,7 +249,7 @@ class Controller{
         sentences.forEach(sentence => {sentencetexts.push(sentence.sentence_text)});
 
         // 3. merge and return
-        return sentencetexts.join('');
+        return sentencetexts.join('')+'$'+sentenceID;
     }
 
     /**    /** TODO needs refactoring to promise

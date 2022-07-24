@@ -131,8 +131,8 @@ Promise.resolve(queryFactory()).then(async f => {
 
 
         const result = await controller.removeSentence(clusterID, sentenceID);
-        console.log(result);
-        res.send(process(result));
+        // console.log(result);
+        res.send(true);
     })
 
 
