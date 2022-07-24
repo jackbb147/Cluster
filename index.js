@@ -39,7 +39,7 @@ Promise.resolve(queryFactory()).then(async f => {
 
     app.get("/", async (req, res) => {
 
-        res.send("/api + one of the following: /clusters, /sentences, /mappings");
+        res.send("/api + one of the following: /clusters, /sentences, /mappings (or any of the endpoints listed in index.js. A documentation is coming soon.");
     });
 
     /**
