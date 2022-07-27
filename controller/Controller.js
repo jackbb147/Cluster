@@ -226,12 +226,17 @@ class Controller{
      * reconstructs a feedback entry, given any of its sentences
      *
      * @param sentenceID
-     * @return String, with the format being "text$id" where id is the feedback id.
+     * @return String, with the format being "text$n$m$id" where n and m encode information useful
+     * for sentence highlighting, and id is the feedback id. n is the starting index for highlighting,
+     * and m is the how many characters to highlight ( i.e the length of this particular sentence.)
      */
     async reconstructFbEntry( sentenceID ){
         const sentence = (await this.getSentence(sentenceID))[0];   //see ASSUMPTIONS above
         if(sentence === undefined) return;                          //no sentence found.
+        var thisOrder = sentence.order_within_feedback_entry;       //order of this particular sentence.
+        var thisText = sentence.sentence_text;
         var fbID;                 // feedback ID
+        let wordCount = 0;
         try {
             fbID = sentence.feedback_entry_id;
         }catch (e) {
@@ -246,10 +251,14 @@ class Controller{
             (a,b) => a.order_within_feedback_entry - b.order_within_feedback_entry
         );
         // 2. grab the texts
-        sentences.forEach(sentence => {sentencetexts.push(sentence.sentence_text)});
-
+        sentences.forEach((sentence,index) => {
+            if(index < thisOrder)
+                wordCount += sentence.sentence_text.length;
+            sentencetexts.push(sentence.sentence_text)}
+        );
+        // sentencetexts[thisOrder-1] = `<mark>${thisText}</mark>`;
         // 3. merge and return
-        return sentencetexts.join('')+'$'+sentenceID;
+        return sentencetexts.join('')+'$'+wordCount+'$'+thisText.length+'$'+sentenceID;
     }
 
     /**    /** TODO needs refactoring to promise

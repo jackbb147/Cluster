@@ -101,7 +101,6 @@ Promise.resolve(queryFactory()).then(async f => {
 
         const result = controller.getSentence(req.params.id);
         result.then(arr => {
-            console.log("index.js 101: ", arr);
             res.send(process(arr));
         })
     })
@@ -167,7 +166,7 @@ Promise.resolve(queryFactory()).then(async f => {
 
 
         const result = await controller.addSentenceToCluster(clusterID, sentenceID);
-        console.log(result);
+        console.log("add sentence to cluster: ",result);
         res.send(process(result));
     })
 
