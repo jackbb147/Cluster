@@ -252,7 +252,7 @@ class Controller{
         );
         // 2. grab the texts
         sentences.forEach((sentence,index) => {
-            if(index < thisOrder)
+            if(index < thisOrder-1)
                 wordCount += sentence.sentence_text.length;
             sentencetexts.push(sentence.sentence_text)}
         );
